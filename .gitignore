@@ -132,3 +132,5 @@ dist
 # IntelliJ IDE
 .idea/
 /.idea/
+/package-lock.json
+/frontend/package-lock.json
