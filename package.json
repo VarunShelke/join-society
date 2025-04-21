@@ -1,6 +1,6 @@
 {
   "name": "join-society",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A simple Node app built on fastify, instantly up and running. Built to be remixed on Glitch.com.",
   "main": "backend/server.js",
   "scripts": {

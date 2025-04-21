@@ -134,3 +134,4 @@ dist
 /.idea/
 /package-lock.json
 /frontend/package-lock.json
+/frontend/build/
