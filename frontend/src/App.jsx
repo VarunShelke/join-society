@@ -8,6 +8,7 @@ import CategoryPage from "./pages/CategoryPage";
 
 import Navbar from "./components/Navbar";
 import {Toaster} from "react-hot-toast";
+import ProductDetails from './components/ProductDetails';
 import {useUserStore} from "./stores/useUserStore";
 import {useEffect} from "react";
 import LoadingSpinner from "./components/LoadingSpinner";
@@ -71,6 +72,7 @@ function App() {
                         path="/purchase-cancel"
                         element={user ? <PurchaseCancelPage/> : <Navigate to="/login"/>}
                     />
+                    <Route path="/products/:id" element={<ProductDetails/>}/>
                 </Routes>
             </div>
             <Toaster/>
