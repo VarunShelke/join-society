@@ -4,17 +4,41 @@ import {useProductStore} from "../stores/useProductStore";
 import FeaturedProducts from "../components/FeaturedProducts";
 
 const categories = [
-    {href: "/jeans", name: "Jeans", imageUrl: "/jeans.jpg"},
-    {href: "/t-shirts", name: "T-shirts", imageUrl: "/tshirts.jpg"},
-    {href: "/shoes", name: "Shoes", imageUrl: "/shoes.jpg"},
+    {
+        href: "/jeans",
+        name: "Jeans",
+        imageUrl: "https://res.cloudinary.com/dl05vbccw/image/upload/v1745547586/jeans_x5sgtw.jpg"
+    },
+    {
+        href: "/t-shirts",
+        name: "T-shirts",
+        imageUrl: "https://res.cloudinary.com/dl05vbccw/image/upload/v1745547587/tshirt_amoqrd.jpg"
+    },
+    {
+        href: "/shoes",
+        name: "Shoes",
+        imageUrl: "https://res.cloudinary.com/dl05vbccw/image/upload/v1745547586/shoes_fdnp3f.jpg"
+    },
     {
         href: "/glasses",
         name: "Glasses",
-        imageUrl: "https://cdn.glitch.global/0ff24299-7b24-4865-8642-5bb2b78e0027/glasses.png?v=1745013092007"
+        imageUrl: "https://res.cloudinary.com/dl05vbccw/image/upload/v1745547586/glasses_prrw8j.jpg"
     },
-    {href: "/jackets", name: "Jackets", imageUrl: "/jackets.jpg"},
-    {href: "/suits", name: "Suits", imageUrl: "/suits.jpg"},
-    {href: "/bags", name: "Bags", imageUrl: "/bags.jpg"},
+    {
+        href: "/jackets",
+        name: "Jackets",
+        imageUrl: "https://res.cloudinary.com/dl05vbccw/image/upload/v1745547586/jackets_xbmy9g.jpg"
+    },
+    {
+        href: "/suits",
+        name: "Suits",
+        imageUrl: "https://res.cloudinary.com/dl05vbccw/image/upload/v1745547586/suits_depyrk.jpg"
+    },
+    {
+        href: "/bags",
+        name: "Bags",
+        imageUrl: "https://res.cloudinary.com/dl05vbccw/image/upload/v1745547586/bags_zqak1b.jpg"
+    },
 ];
 
 const HomePage = () => {
