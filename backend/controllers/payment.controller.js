@@ -91,18 +91,23 @@ export const checkoutSuccess = async (req, res) => {
                 );
             }
 
-            // create a new Order
             const products = JSON.parse(session.metadata.products);
+
             const newOrder = new Order({
-                user: session.metadata.userId,
-                products: products.map((product) => ({
-                    product: product.id,
-                    quantity: product.quantity,
-                    price: product.price,
-                })),
-                totalAmount: session.amount_total / 100, // convert from cents to dollars,
-                stripeSessionId: sessionId,
-            });
+                    orderNumber: getRandomInt(9999999999),
+                    user: session.metadata.userId,
+                    products:
+                        products.map((product) => ({
+                            product: product.id,
+                            quantity: product.quantity,
+                            price: product.price,
+                        })),
+                    totalAmount:
+                        session.amount_total / 100, // convert from cents to dollars,
+                    stripeSessionId:
+                    sessionId,
+                })
+            ;
 
             await newOrder.save();
 
@@ -110,6 +115,7 @@ export const checkoutSuccess = async (req, res) => {
                 success: true,
                 message: "Payment successful, order created, and coupon deactivated if used.",
                 orderId: newOrder._id,
+                orderNumber: newOrder.orderNumber,
             });
         }
     } catch (error) {
@@ -117,6 +123,10 @@ export const checkoutSuccess = async (req, res) => {
         res.status(500).json({message: "Error processing successful checkout", error: error.message});
     }
 };
+
+function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
+}
 
 async function createStripeCoupon(discountPercentage) {
     const coupon = await stripe.coupons.create({

@@ -7,16 +7,17 @@ import Confetti from "react-confetti";
 
 const PurchaseSuccessPage = () => {
     const [isProcessing, setIsProcessing] = useState(true);
+    const [orderNumber, setOrderNumber] = useState(null);
     const {clearCart} = useCartStore();
     const [error, setError] = useState(null);
-
     useEffect(() => {
         const handleCheckoutSuccess = async (sessionId) => {
             try {
-                await axios.post("/payments/checkout-success", {
+                const res = await axios.post("/payments/checkout-success", {
                     sessionId,
                 });
-                clearCart();
+                setOrderNumber(res.data.orderNumber);
+                await clearCart();
             } catch (error) {
                 console.log(error);
             } finally {
@@ -66,7 +67,11 @@ const PurchaseSuccessPage = () => {
                     <div className='bg-gray-700 rounded-lg p-4 mb-6'>
                         <div className='flex items-center justify-between mb-2'>
                             <span className='text-sm text-gray-400'>Order number</span>
-                            <span className='text-sm font-semibold text-emerald-400'>#12345</span>
+                            <span
+                                className='text-sm font-semibold text-emerald-400'>
+                                {orderNumber ? `#${orderNumber}` : "Loading..."}
+                            </span>
+
                         </div>
                         <div className='flex items-center justify-between'>
                             <span className='text-sm text-gray-400'>Estimated delivery</span>
