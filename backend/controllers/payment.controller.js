@@ -31,7 +31,7 @@ export const createCheckoutSession = async (req, res) => {
 
         let coupon = null;
         if (couponCode) {
-            coupon = await Coupon.findOne({code: couponCode, userId: req.user._id, isActive: true});
+            coupon = await Coupon.findOne({code: couponCode, isActive: true});
             if (coupon) {
                 totalAmount -= Math.round((totalAmount * coupon.discountPercentage) / 100);
             }
@@ -92,21 +92,29 @@ export const checkoutSuccess = async (req, res) => {
                 );
             }
 
-            // create a new Order
             const products = JSON.parse(session.metadata.products);
-            const address = JSON.parse(session.metadata.address); // retrieve address
 
-            const newOrder = new Order({
-                user: session.metadata.userId,
-                products: products.map((product) => ({
-                    product: product.id,
-                    quantity: product.quantity,
-                    price: product.price,
-                })),
-                totalAmount: session.amount_total / 100, // convert from cents to dollars,
-                stripeSessionId: sessionId,
-                address: address, // save address inside order
-            });
+            const address = JSON.parse(session.metadata.address);
+          
+          const address = JSON.parse(session.metadata.address);
+          
+          const newOrder = new Order({
+                    orderNumber: getRandomInt(9999999999),
+                    user: session.metadata.userId,
+                    products:
+                        products.map((product) => ({
+                            product: product.id,
+                            quantity: product.quantity,
+                            price: product.price,
+                        })),
+                    totalAmount:
+                        session.amount_total / 100, // convert from cents to dollars,
+                    stripeSessionId:
+                    sessionId,
+            address: address, // save address inside order
+                })
+            ;
+
 
             await newOrder.save();
 
@@ -114,6 +122,7 @@ export const checkoutSuccess = async (req, res) => {
                 success: true,
                 message: "Payment successful, order created, and coupon deactivated if used.",
                 orderId: newOrder._id,
+                orderNumber: newOrder.orderNumber,
             });
         }
     } catch (error) {
@@ -121,6 +130,10 @@ export const checkoutSuccess = async (req, res) => {
         res.status(500).json({message: "Error processing successful checkout", error: error.message});
     }
 };
+
+function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
+}
 
 async function createStripeCoupon(discountPercentage) {
     const coupon = await stripe.coupons.create({
