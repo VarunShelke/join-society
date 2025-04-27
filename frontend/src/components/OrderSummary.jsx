@@ -1,6 +1,6 @@
 import {motion} from "framer-motion";
 import {useCartStore} from "../stores/useCartStore";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom"; // Added useNavigate for address
 import {MoveRight} from "lucide-react";
 import {loadStripe} from "@stripe/stripe-js";
 import axios from "../lib/axios";
@@ -11,6 +11,7 @@ const stripePromise = loadStripe(
 
 const OrderSummary = () => {
     const {total, subtotal, coupon, isCouponApplied, cart} = useCartStore();
+    const navigate = useNavigate(); // Added for address
 
     const savings = subtotal - total;
     const formattedSubtotal = subtotal.toFixed(2);
@@ -32,6 +33,10 @@ const OrderSummary = () => {
         if (result.error) {
             console.error("Error:", result.error);
         }
+    };
+
+    const handleCheckoutClick = () => {
+        navigate("/address");  // New function: go to Address Page first
     };
 
     return (
@@ -73,7 +78,7 @@ const OrderSummary = () => {
                     className='flex w-full items-center justify-center rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-emerald-700 focus:outline-none focus:ring-4 focus:ring-emerald-300'
                     whileHover={{scale: 1.05}}
                     whileTap={{scale: 0.95}}
-                    onClick={handlePayment}
+                    onClick={handleCheckoutClick} // previous: onClick={handlePayment}
                 >
                     Proceed to Checkout
                 </motion.button>

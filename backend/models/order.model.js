@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import addressSchema from "./address.model.js"; // imports address schema
 
 const orderSchema = new mongoose.Schema(
     {
@@ -41,7 +42,12 @@ const orderSchema = new mongoose.Schema(
             unique: true,
         },
     },
-    {timestamps: true}
+    address: {
+      type: addressSchema, // embeds separate address schema
+      required: true,
+    },
+  },
+  { timestamps: true }
 );
 
 const Order = mongoose.model("Order", orderSchema);

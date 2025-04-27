@@ -4,7 +4,7 @@ import {stripe} from "../lib/stripe.js";
 
 export const createCheckoutSession = async (req, res) => {
     try {
-        const {products, couponCode} = req.body;
+        const {products, couponCode, address} = req.body; // included address
 
         if (!Array.isArray(products) || products.length === 0) {
             return res.status(400).json({error: "Invalid or empty products array"});
@@ -60,6 +60,7 @@ export const createCheckoutSession = async (req, res) => {
                         price: p.price,
                     }))
                 ),
+                address: JSON.stringify(address), // Adds address into metadata
             },
         });
 
@@ -93,7 +94,11 @@ export const checkoutSuccess = async (req, res) => {
 
             const products = JSON.parse(session.metadata.products);
 
-            const newOrder = new Order({
+            const address = JSON.parse(session.metadata.address);
+          
+          const address = JSON.parse(session.metadata.address);
+          
+          const newOrder = new Order({
                     orderNumber: getRandomInt(9999999999),
                     user: session.metadata.userId,
                     products:
@@ -106,8 +111,10 @@ export const checkoutSuccess = async (req, res) => {
                         session.amount_total / 100, // convert from cents to dollars,
                     stripeSessionId:
                     sessionId,
+            address: address, // save address inside order
                 })
             ;
+
 
             await newOrder.save();
 
