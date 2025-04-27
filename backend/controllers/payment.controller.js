@@ -93,8 +93,6 @@ export const checkoutSuccess = async (req, res) => {
             }
 
             const products = JSON.parse(session.metadata.products);
-
-            const address = JSON.parse(session.metadata.address);
           
           const address = JSON.parse(session.metadata.address);
           
