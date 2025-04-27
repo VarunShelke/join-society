@@ -153,3 +153,33 @@ export const getProfile = async (req, res) => {
         res.status(500).json({message: "Server error", error: error.message});
     }
 };
+
+export const updateEmail = async (req, res) => {
+    try {
+      const { email } = req.body;
+      const user = await User.findById(req.user._id);
+      user.email = email;
+      await user.save();
+      res.json({ message: "Email updated" });
+    } catch (err) {
+      console.error("Error in updateEmail", err);
+      res.status(500).json({ message: "Server error" });
+    }
+};
+  
+  export const updatePassword = async (req, res) => {
+    try {
+      const { oldPassword, newPassword } = req.body;
+      const user = await User.findById(req.user._id);
+      const ok = await user.comparePassword(oldPassword);
+      if (!ok) {
+        return res.status(400).json({ message: "Current password is incorrect" });
+      }
+      user.password = newPassword;          
+      await user.save();
+      res.json({ message: "Password changed" });
+    } catch (err) {
+      console.error("Error in updatePassword", err);
+      res.status(500).json({ message: "Server error" });
+    }
+};  
