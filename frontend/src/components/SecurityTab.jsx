@@ -13,7 +13,7 @@ export default function SecurityTab({ user, refreshUser }) {
   const updateEmail = async (e) => {
     e.preventDefault();
     try {
-      await axios.put("/api/auth/update-email", { email });
+      await axios.put("/auth/update-email", { email });
       toast.success("Email updated");
       refreshUser();
     } catch (err) {
@@ -27,7 +27,7 @@ export default function SecurityTab({ user, refreshUser }) {
       return toast.error("New passwords must match");
     }
     try {
-      await axios.put("/api/auth/update-password", {
+      await axios.put("/auth/update-password", {
         oldPassword: oldPwd,
         newPassword: newPwd,
       });
