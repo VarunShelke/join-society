@@ -15,7 +15,7 @@ const couponSchema = new mongoose.Schema(
 		},
 		expirationDate: {
 			type: Date,
-			required: true,
+			required: false,
 		},
 		isActive: {
 			type: Boolean,
@@ -24,7 +24,7 @@ const couponSchema = new mongoose.Schema(
 		userId: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "User",
-			required: true,
+			required: false,
 			unique: true,
 		},
 	},
