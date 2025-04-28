@@ -1,6 +1,7 @@
 import {redis} from "../lib/redis.js";
 import cloudinary from "../lib/cloudinary.js";
 import Product from "../models/product.model.js";
+import {v4 as uuidv4} from "uuid";
 
 export const getAllProducts = async (req, res) => {
     try {
@@ -61,8 +62,9 @@ export const createProduct = async (req, res) => {
                 folder: "products",
             });
         }
-
+        const productId = uuidv4();
         const product = await Product.create({
+            id: productId,
             name,
             description,
             price,
