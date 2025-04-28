@@ -12,7 +12,7 @@ const ProductDetailsModal = ({ isOpen, onClose, productId }) => {
     const [loading, setLoading] = useState(true);
     const [similarProducts, setSimilarProducts] = useState([]);
     const [currentImgIndex, setCurrentImgIndex] = useState(0);
-    const { addToCart } = useCartStore();
+    const { addToCart, getCartItems } = useCartStore();
     const { user } = useUserStore();
 
     // Fetch product details when modal opens
@@ -42,20 +42,43 @@ const ProductDetailsModal = ({ isOpen, onClose, productId }) => {
         }
     };
 
-    const handleAddToCart = () => {
+    const handleAddToCart = async () => {
         if (!user) {
             toast.error("Please login to add products to cart", { id: "login" });
             return;
         }
 
         if (product) {
-            // Add to cart multiple times based on quantity
-            for (let i = 0; i < quantity; i++) {
-                addToCart(product);
-            }
+            try {
+                // Silence all the individual toast notifications
+                toast.dismiss();
 
-            toast.success(`Added ${quantity} ${product.name} to cart`);
-            onClose();
+                // Create a custom toast for the multiple quantity
+                if (quantity > 1) {
+                    // Show a temporary loading toast
+                    const toastId = `add-${product._id}`;
+                    toast.loading(`Adding items to cart...`, { id: toastId });
+
+                    // Add to cart multiple times based on quantity
+                    for (let i = 0; i < quantity; i++) {
+                        await addToCart(product, false); // Add false parameter to prevent toasts
+                    }
+
+                    // Replace with a single success message
+                    toast.success(`Added ${quantity} ${product.name} to cart`, { id: toastId });
+                } else {
+                    // For single quantity, just use the normal flow
+                    await addToCart(product);
+                }
+
+                // Make sure cart is refreshed
+                await getCartItems();
+
+                // Close the modal
+                onClose();
+            } catch (error) {
+                toast.error("Failed to add items to cart");
+            }
         }
     };
 
