@@ -1,19 +1,19 @@
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { X, ShoppingCart, ChevronLeft, ChevronRight, Minus, Plus } from "lucide-react";
+import {useEffect, useState} from "react";
+import {AnimatePresence, motion} from "framer-motion";
+import {Minus, Plus, ShoppingCart, X} from "lucide-react";
 import axios from "../lib/axios";
-import { useCartStore } from "../stores/useCartStore";
-import { useUserStore } from "../stores/useUserStore";
+import {useCartStore} from "../stores/useCartStore";
+import {useUserStore} from "../stores/useUserStore";
 import toast from "react-hot-toast";
 
-const ProductDetailsModal = ({ isOpen, onClose, productId }) => {
+const ProductDetailsModal = ({isOpen, onClose, productId}) => {
     const [product, setProduct] = useState(null);
     const [quantity, setQuantity] = useState(1);
     const [loading, setLoading] = useState(true);
     const [similarProducts, setSimilarProducts] = useState([]);
     const [currentImgIndex, setCurrentImgIndex] = useState(0);
-    const { addToCart } = useCartStore();
-    const { user } = useUserStore();
+    const {addToCart} = useCartStore();
+    const {user} = useUserStore();
 
     // Fetch product details when modal opens
     useEffect(() => {
@@ -44,12 +44,11 @@ const ProductDetailsModal = ({ isOpen, onClose, productId }) => {
 
     const handleAddToCart = () => {
         if (!user) {
-            toast.error("Please login to add products to cart", { id: "login" });
+            toast.error("Please login to add products to cart", {id: "login"});
             return;
         }
 
         if (product) {
-            // Add to cart multiple times based on quantity
             for (let i = 0; i < quantity; i++) {
                 addToCart(product);
             }
@@ -90,49 +89,49 @@ const ProductDetailsModal = ({ isOpen, onClose, productId }) => {
         };
     }, [isOpen]);
 
-    // If not open, don't render
     if (!isOpen) return null;
 
     return (
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center pt-16"> {/* Added pt-16 for top spacing */}
-                    {/* Backdrop */}
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center pt-16"> {/* Added pt-16 for top spacing */}
+
                     <motion.div
                         className="fixed inset-0 bg-black/80 backdrop-blur-sm"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
+                        initial={{opacity: 0}}
+                        animate={{opacity: 1}}
+                        exit={{opacity: 0}}
                         onClick={onClose}
                     />
 
-                    {/* Modal Content */}
                     <motion.div
                         className="relative w-full max-w-6xl max-h-[85vh] bg-gray-900 overflow-auto z-10 mx-4 flex flex-col"
-                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                        transition={{ type: "spring", damping: 25 }}
+                        initial={{opacity: 0, scale: 0.9, y: 20}}
+                        animate={{opacity: 1, scale: 1, y: 0}}
+                        exit={{opacity: 0, scale: 0.9, y: 20}}
+                        transition={{type: "spring", damping: 25}}
                         onClick={e => e.stopPropagation()}
                     >
-                        {/* Close Button */}
+
                         <button
                             className="absolute top-4 right-4 z-10 p-1 rounded-full bg-gray-800 hover:bg-gray-700 transition-colors"
                             onClick={onClose}
                         >
-                            <X className="h-6 w-6 text-gray-400 hover:text-white" />
+                            <X className="h-6 w-6 text-gray-400 hover:text-white"/>
                         </button>
 
                         {loading ? (
                             <div className="flex justify-center items-center h-96 w-full">
                                 <div className="relative">
-                                    <div className="w-12 h-12 border-emerald-200 border-2 rounded-full" />
-                                    <div className="w-12 h-12 border-emerald-500 border-t-2 animate-spin rounded-full absolute left-0 top-0" />
+                                    <div className="w-12 h-12 border-emerald-200 border-2 rounded-full"/>
+                                    <div
+                                        className="w-12 h-12 border-emerald-500 border-t-2 animate-spin rounded-full absolute left-0 top-0"/>
                                 </div>
                             </div>
                         ) : product ? (
                             <>
-                                {/* Main Product Content */}
+
                                 <div className="flex flex-col md:flex-row">
                                     {/* Product Image (Left side) */}
                                     <div className="md:w-1/2 bg-white">
@@ -143,24 +142,20 @@ const ProductDetailsModal = ({ isOpen, onClose, productId }) => {
                                         />
                                     </div>
 
-                                    {/* Product Details (Right side) */}
+
                                     <div className="md:w-1/2 p-8 flex flex-col">
-                                        {/* Product Title */}
+
                                         <h1 className="text-3xl md:text-4xl font-bold text-white leading-tight">
                                             {product.name}
                                         </h1>
 
-                                        {/* Price */}
                                         <p className="text-3xl font-bold text-emerald-400 mt-2">${product.price}</p>
-
-                                        {/* Product Description */}
                                         <div className="my-6">
                                             <p className="text-gray-300 text-base leading-relaxed">
                                                 {product.description}
                                             </p>
                                         </div>
 
-                                        {/* Product Specs */}
                                         {(product.brand || product.material || product.category || product.style) && (
                                             <div className="mb-6">
                                                 {product.style && (
@@ -175,10 +170,8 @@ const ProductDetailsModal = ({ isOpen, onClose, productId }) => {
                                             </div>
                                         )}
 
-                                        {/* Spacer to push quantity and button to bottom */}
                                         <div className="flex-grow"></div>
 
-                                        {/* Quantity and Add to Cart button */}
                                         <div className="mt-4">
                                             <div className="flex items-center mb-4">
                                                 <span className="text-white mr-4">Quantity:</span>
@@ -187,7 +180,7 @@ const ProductDetailsModal = ({ isOpen, onClose, productId }) => {
                                                         onClick={decreaseQuantity}
                                                         className="h-10 w-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-gray-700"
                                                     >
-                                                        <Minus className="h-4 w-4 text-white" />
+                                                        <Minus className="h-4 w-4 text-white"/>
                                                     </button>
                                                     <input
                                                         type="text"
@@ -199,7 +192,7 @@ const ProductDetailsModal = ({ isOpen, onClose, productId }) => {
                                                         onClick={increaseQuantity}
                                                         className="h-10 w-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-gray-700"
                                                     >
-                                                        <Plus className="h-4 w-4 text-white" />
+                                                        <Plus className="h-4 w-4 text-white"/>
                                                     </button>
                                                 </div>
                                             </div>
@@ -208,17 +201,17 @@ const ProductDetailsModal = ({ isOpen, onClose, productId }) => {
                                                 onClick={handleAddToCart}
                                                 className="w-full h-14 bg-emerald-600 hover:bg-emerald-500 text-white text-lg font-semibold rounded transition-colors duration-300 flex items-center justify-center"
                                             >
-                                                <ShoppingCart className="w-5 h-5 mr-2" />
+                                                <ShoppingCart className="w-5 h-5 mr-2"/>
                                                 Add to Cart
                                             </button>
                                         </div>
                                     </div>
                                 </div>
 
-                                {/* Similar Products / You might also like section */}
                                 {similarProducts.length > 0 && (
                                     <div className="p-6 border-t border-gray-800 mt-4">
-                                        <h2 className="text-xl font-semibold text-emerald-400 mb-4">You Might Also Like</h2>
+                                        <h2 className="text-xl font-semibold text-emerald-400 mb-4">You Might Also
+                                            Like</h2>
                                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                             {similarProducts.map(similarProduct => (
                                                 <div
