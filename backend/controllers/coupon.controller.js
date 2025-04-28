@@ -13,6 +13,20 @@ export const getCoupon = async (req, res) => {
     }
 };
 
+// New: returns all of the user’s active coupons
+export const getCouponsByUser = async (req, res) => {
+    try {
+        const coupons = await Coupon.find({
+            userId: req.user._id,
+            isActive: true,
+        }).sort({ createdAt: -1 });
+        res.json(coupons);
+    } catch (error) {
+        console.log("Error in getCouponsByUser controller", error.message);
+        res.status(500).json({message: "Server error", error: error.message});
+    }
+};
+
 export const validateCoupon = async (req, res) => {
     try {
         const {code} = req.body;
@@ -53,7 +67,7 @@ export const addCoupon = async (req, res) => {
         const existingCoupon = await Coupon.findOne({
             code: code,
             isActive: true,
-        })
+        });
 
         if (existingCoupon) {
             return res.status(400).json({message: "Coupon code already exists."});
@@ -63,7 +77,7 @@ export const addCoupon = async (req, res) => {
             code: code,
             discountPercentage: discount,
             expirationDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
-        })
+        });
         await newCoupon.save();
         return res.status(201).json({message: "Coupon created."});
     } catch (error) {
