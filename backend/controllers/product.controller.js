@@ -1,6 +1,7 @@
 import {redis} from "../lib/redis.js";
 import cloudinary from "../lib/cloudinary.js";
 import Product from "../models/product.model.js";
+import {v4 as uuidv4} from "uuid";
 
 export const getAllProducts = async (req, res) => {
     try {
@@ -8,6 +9,21 @@ export const getAllProducts = async (req, res) => {
         res.json({products});
     } catch (error) {
         console.log("Error in getAllProducts controller", error.message);
+        res.status(500).json({message: "Server error", error: error.message});
+    }
+};
+
+export const getProductById = async (req, res) => {
+    try {
+        const product = await Product.findById(req.params.id);
+
+        if (!product) {
+            return res.status(404).json({message: "Product not found"});
+        }
+
+        res.json(product);
+    } catch (error) {
+        console.log("Error in getProductById controller", error.message);
         res.status(500).json({message: "Server error", error: error.message});
     }
 };
@@ -26,7 +42,6 @@ export const getFeaturedProducts = async (req, res) => {
         }
 
         // store in redis for future quick access
-
         await redis.set("featured_products", JSON.stringify(featuredProducts));
 
         res.json(featuredProducts);
@@ -47,8 +62,9 @@ export const createProduct = async (req, res) => {
                 folder: "products",
             });
         }
-
+        const productId = uuidv4();
         const product = await Product.create({
+            id: productId,
             name,
             description,
             price,

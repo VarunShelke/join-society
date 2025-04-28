@@ -13,12 +13,25 @@ export const getCoupon = async (req, res) => {
     }
 };
 
+// New: returns all of the user’s active coupons
+export const getCouponsByUser = async (req, res) => {
+    try {
+        const coupons = await Coupon.find({
+            userId: req.user._id,
+            isActive: true,
+        }).sort({ createdAt: -1 });
+        res.json(coupons);
+    } catch (error) {
+        console.log("Error in getCouponsByUser controller", error.message);
+        res.status(500).json({message: "Server error", error: error.message});
+    }
+};
+
 export const validateCoupon = async (req, res) => {
     try {
         const {code} = req.body;
         const coupon = await Coupon.findOne({
             code: code,
-            userId: req.user._id,
             isActive: true,
         });
 
@@ -40,5 +53,35 @@ export const validateCoupon = async (req, res) => {
     } catch (error) {
         console.log("Error in validateCoupon controller", error.message);
         res.status(500).json({message: "Server error", error: error.message});
+    }
+};
+
+export const addCoupon = async (req, res) => {
+    try {
+        const {code, discount} = req.body;
+
+        if (!code || !discount) {
+            return res.status(400).json({message: "Coupon code and discount are required."});
+        }
+
+        const existingCoupon = await Coupon.findOne({
+            code: code,
+            isActive: true,
+        });
+
+        if (existingCoupon) {
+            return res.status(400).json({message: "Coupon code already exists."});
+        }
+
+        const newCoupon = new Coupon({
+            code: code,
+            discountPercentage: discount,
+            expirationDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+        });
+        await newCoupon.save();
+        return res.status(201).json({message: "Coupon created."});
+    } catch (error) {
+        console.log("Error in addCoupon controller", error.message);
+        return res.status(500).json({message: "Server error", error: error.message});
     }
 };
